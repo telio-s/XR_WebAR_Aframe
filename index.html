@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>A-Frame AR.js</title>
+    <meta charset="utf-8" />
+    <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+    <script>
+      // this is an object, not an array
+      let marker_visible = { m0: false, m1: false, m2: false };
+
+      // a component to handle marker events: found and lost
+      AFRAME.registerComponent("marker-events", {
+        init: function () {
+          let el = this.el;
+
+          el.addEventListener("markerFound", function () {
+            marker_visible[el.id] = true;
+            console.log(el.id + " found");
+          });
+
+          el.addEventListener("markerLost", function () {
+            marker_visible[el.id] = false;
+            console.log(el.id + " lost");
+          });
+        },
+      });
+
+      AFRAME.registerComponent("draw-line0-1", {
+        init: function () {
+          // getting the DOM elements "#m0", "#m1" and "#m2"
+          this.el0 = document.querySelector("#m0");
+          this.el1 = document.querySelector("#m1");
+
+          // to store the position of the the markers
+          this.p0 = new THREE.Vector3();
+          this.p1 = new THREE.Vector3();
+
+          // a buffer (data) representing a line (a long and thin cylinder)
+          let geometry = new THREE.CylinderGeometry(0.01, 0.01, 1, 3);
+          geometry.applyMatrix(new THREE.Matrix4().makeTranslation(0, 0.5, 0));
+          geometry.applyMatrix(
+            new THREE.Matrix4().makeRotationX(THREE.Math.degToRad(90))
+          );
+
+          // set up the material of the line
+          let material = new THREE.MeshLambertMaterial({ color: 0x0000ff });
+          material.opacity = 0.5;
+
+          // assemble a line by combining the buffer and material
+          this.line = new THREE.Mesh(geometry, material);
+
+          // get the current object3D from the #drawHere inside #m0
+          this.origin = document.querySelector("#drawHere0").object3D;
+
+          // add the line to the origin object3D (located at #drawHere which is #m0)
+          this.origin.add(this.line);
+        },
+
+        // loop to check if the two markers are visible
+        tick: function (time, deltaTime) {
+          // if both markers are visible, get their world positions and store in p0 and p1
+          if (
+            marker_visible["m0"] &&
+            marker_visible["m1"] &&
+            marker_visible["m2"]
+          ) {
+            this.el0.object3D.getWorldPosition(this.p0);
+            this.el1.object3D.getWorldPosition(this.p1);
+
+            // compute the distance from p0 to p1
+            let distance = this.p0.distanceTo(this.p1);
+
+            // orient the frame of reference to look at p1 (+z direction point at p1)
+            this.origin.lookAt(this.p1);
+
+            // set the scale of the line
+            this.line.scale.set(1, 1, distance);
+
+            // make the line visible
+            this.line.visible = true;
+          } else {
+            // if any marker is not visible, hide the line
+            this.line.visible = false;
+          }
+        },
+      });
+
+      AFRAME.registerComponent("draw-line1-2", {
+        init: function () {
+          // getting the DOM elements "#m0", "#m1" and "#m2"
+          this.el1 = document.querySelector("#m1");
+          this.el2 = document.querySelector("#m2");
+
+          // to store the position of the the markers
+          this.p1 = new THREE.Vector3();
+          this.p2 = new THREE.Vector3();
+
+          // a buffer (data) representing a line (a long and thin cylinder)
+          let geometry = new THREE.CylinderGeometry(0.01, 0.01, 1, 3);
+          geometry.applyMatrix(new THREE.Matrix4().makeTranslation(0, 0.5, 0));
+          geometry.applyMatrix(
+            new THREE.Matrix4().makeRotationX(THREE.Math.degToRad(90))
+          );
+
+          // set up the material of the line
+          let material = new THREE.MeshLambertMaterial({ color: 0x0000ff });
+          material.opacity = 0.5;
+
+          // assemble a line by combining the buffer and material
+          this.line = new THREE.Mesh(geometry, material);
+
+          // get the current object3D from the #drawHere inside #m0
+          this.origin = document.querySelector("#drawHere1").object3D;
+
+          // add the line to the origin object3D (located at #drawHere which is #m0)
+          this.origin.add(this.line);
+        },
+
+        // loop to check if the two markers are visible
+        tick: function (time, deltaTime) {
+          // if both markers are visible, get their world positions and store in p0 and p1
+          if (
+            marker_visible["m0"] &&
+            marker_visible["m1"] &&
+            marker_visible["m2"]
+          ) {
+            this.el1.object3D.getWorldPosition(this.p1);
+            this.el2.object3D.getWorldPosition(this.p2);
+
+            // compute the distance from p0 to p2
+            let distance = this.p1.distanceTo(this.p2);
+
+            // orient the frame of reference to look at p2 (+z direction point at p2)
+            this.origin.lookAt(this.p2);
+
+            // set the scale of the line
+            this.line.scale.set(1, 1, distance);
+
+            // make the line visible
+            this.line.visible = true;
+          }
+          //   if (marker_visible["m0"] && marker_visible["m2"]) {
+          //     console.log("m0m2");
+          //     this.el0.object3D.getWorldPosition(this.p0);
+          //     this.el2.object3D.getWorldPosition(this.p2);
+
+          //     // compute the distance from p0 to p2
+          //     let distance = this.p0.distanceTo(this.p2);
+
+          //     this.origin = document.querySelector("#drawHere0").object3D;
+          //     this.origin.add(this.line);
+          //     // orient the frame of reference to look at p2 (+z direction point at p2)
+          //     this.origin.lookAt(this.p2);
+
+          //     // set the scale of the line
+          //     this.line.scale.set(1, 1, distance);
+
+          //     // make the line visible
+          //     this.line.visible = true;
+          //   }
+          else {
+            // if any marker is not visible, hide the line
+            this.line.visible = false;
+          }
+        },
+      });
+
+      AFRAME.registerComponent("draw-line2-0", {
+        init: function () {
+          // getting the DOM elements "#m0", "#m1" and "#m2"
+          this.el0 = document.querySelector("#m0");
+          this.el2 = document.querySelector("#m2");
+
+          // to store the position of the the markers
+          this.p0 = new THREE.Vector3();
+          this.p2 = new THREE.Vector3();
+
+          // a buffer (data) representing a line (a long and thin cylinder)
+          let geometry = new THREE.CylinderGeometry(0.01, 0.01, 1, 3);
+          geometry.applyMatrix(new THREE.Matrix4().makeTranslation(0, 0.5, 0));
+          geometry.applyMatrix(
+            new THREE.Matrix4().makeRotationX(THREE.Math.degToRad(90))
+          );
+
+          // set up the material of the line
+          let material = new THREE.MeshLambertMaterial({ color: 0x0000ff });
+          material.opacity = 0.5;
+
+          // assemble a line by combining the buffer and material
+          this.line = new THREE.Mesh(geometry, material);
+
+          // get the current object3D from the #drawHere inside #m0
+          this.origin = document.querySelector("#drawHere2").object3D;
+
+          // add the line to the origin object3D (located at #drawHere which is #m0)
+          this.origin.add(this.line);
+        },
+
+        // loop to check if the two markers are visible
+        tick: function (time, deltaTime) {
+          // if both markers are visible, get their world positions and store in p0 and p1
+          if (
+            marker_visible["m0"] &&
+            marker_visible["m1"] &&
+            marker_visible["m2"]
+          ) {
+            this.el0.object3D.getWorldPosition(this.p0);
+            this.el2.object3D.getWorldPosition(this.p2);
+
+            // compute the distance from p0 to p2
+            let distance = this.p2.distanceTo(this.p0);
+
+            // orient the frame of reference to look at p2 (+z direction point at p2)
+            this.origin.lookAt(this.p0);
+
+            // set the scale of the line
+            this.line.scale.set(1, 1, distance);
+
+            // make the line visible
+            this.line.visible = true;
+          } else {
+            // if any marker is not visible, hide the line
+            this.line.visible = false;
+          }
+        },
+      });
+    </script>
+  </head>
+  <body style="margin: 0px; overflow: hidden">
+    <!-- A-Frame is built on top of Three.js. All a-frame elements are Three's object3D,
+         but A-Frame does not include AR.js components by default. 
+         We also want to hide the VR UI. -->
+    <a-scene
+      embedded
+      arjs="sourceType: webcam; detectionMode: mono_and_matrix; matrixCodeType: 3x3;"
+      vr-mode-ui="enabled: false;"
+    >
+      <!-- marker #m0 or p0 -->
+      <a-marker type="barcode" value="3" id="m0" marker-events>
+        <!-- draw a red box -->
+        <a-box
+          position="0 0 0"
+          color="red"
+          width="0.1"
+          depth="0.5"
+          height="0.1"
+        ></a-box>
+        <a-box
+          position="-0.1 0 0.2"
+          color="red"
+          width="0.3"
+          depth="0.1"
+          height="0.1"
+        ></a-box>
+        <a-box
+          position="-0.1 0 0"
+          color="red"
+          width="0.2"
+          depth="0.1"
+          height="0.1"
+        ></a-box>
+
+        <!-- draw area originated at #m0/p0 -->
+        <a-entity id="drawHere0"></a-entity>
+      </a-marker>
+
+      <!-- marker #m1 or p1 -->
+      <a-marker type="barcode" value="5" id="m1" marker-events>
+        <!-- draw a red box -->
+        <a-box
+          position="0 0 0"
+          color="green"
+          width="0.1"
+          depth="0.5"
+          height="0.1"
+        ></a-box>
+        <a-box
+          position="-0.1 0 0.2"
+          color="green"
+          width="0.3"
+          depth="0.1"
+          height="0.1"
+        ></a-box>
+        <a-box
+          position="-0.1 0 0"
+          color="green"
+          width="0.2"
+          depth="0.1"
+          height="0.1"
+        ></a-box>
+
+        <a-entity id="drawHere1"></a-entity>
+      </a-marker>
+
+      <a-marker type="barcode" value="7" id="m2" marker-events>
+        <!-- draw a blue box -->
+        <a-box
+          position="0 0 0"
+          color="blue"
+          width="0.1"
+          depth="0.5"
+          height="0.1"
+        ></a-box>
+        <a-box
+          position="-0.1 0 0.2"
+          color="blue"
+          width="0.3"
+          depth="0.1"
+          height="0.1"
+        ></a-box>
+        <a-box
+          position="-0.1 0 0"
+          color="blue"
+          width="0.2"
+          depth="0.1"
+          height="0.1"
+        ></a-box>
+
+        <a-entity id="drawHere2"></a-entity>
+      </a-marker>
+
+      <!-- we need the camera entity to use the webcam to detect the markers -->
+      <a-entity camera></a-entity>
+
+      <!-- This entity will check if the two markers are visible.
+           If the two markers are visible, the draw-line component will draw a blue line between the two markers -->
+      <a-entity draw-line0-1></a-entity>
+      <a-entity draw-line1-2></a-entity>
+      <a-entity draw-line2-0></a-entity>
+    </a-scene>
+  </body>
+</html>
