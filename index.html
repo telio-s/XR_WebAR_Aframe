@@ -1,3 +1,5 @@
+//นางสาว อนัญลักษณ์ ชาญมณีเวช 6110402877
+//นางสาว ศรัญญา ศิริภิรมย์ 6110406236
 <!DOCTYPE html>
 <html>
   <head>
@@ -8,6 +10,9 @@
     <script>
       // this is an object, not an array
       let marker_visible = { m0: false, m1: false, m2: false };
+      // this is for checking if the model is fully loaded
+      let christmas_model_loaded = false;
+      let holomyth_model_loaded = false;
 
       // a component to handle marker events: found and lost
       AFRAME.registerComponent("marker-events", {
@@ -28,7 +33,7 @@
 
       AFRAME.registerComponent("draw-line0-1", {
         init: function () {
-          // getting the DOM elements "#m0", "#m1" and "#m2"
+          // getting the DOM elements "#m0" and "#m1"
           this.el0 = document.querySelector("#m0");
           this.el1 = document.querySelector("#m1");
 
@@ -50,21 +55,22 @@
           // assemble a line by combining the buffer and material
           this.line = new THREE.Mesh(geometry, material);
 
-          // get the current object3D from the #drawHere inside #m0
+          // get the current object3D from the #drawHere0 inside #m0
           this.origin = document.querySelector("#drawHere0").object3D;
 
-          // add the line to the origin object3D (located at #drawHere which is #m0)
+          // add the line to the origin object3D (located at #drawHere0 which is #m0)
           this.origin.add(this.line);
         },
 
-        // loop to check if the two markers are visible
+        // loop to check if the three markers are visible
         tick: function (time, deltaTime) {
-          // if both markers are visible, get their world positions and store in p0 and p1
+          
           if (
             marker_visible["m0"] &&
             marker_visible["m1"] &&
             marker_visible["m2"]
           ) {
+            // if all markers are visible, get their world positions and store in p0 and p1
             this.el0.object3D.getWorldPosition(this.p0);
             this.el1.object3D.getWorldPosition(this.p1);
 
@@ -88,7 +94,7 @@
 
       AFRAME.registerComponent("draw-line1-2", {
         init: function () {
-          // getting the DOM elements "#m0", "#m1" and "#m2"
+          // getting the DOM elements "#m1" and "#m2"
           this.el1 = document.querySelector("#m1");
           this.el2 = document.querySelector("#m2");
 
@@ -110,16 +116,16 @@
           // assemble a line by combining the buffer and material
           this.line = new THREE.Mesh(geometry, material);
 
-          // get the current object3D from the #drawHere inside #m0
+          // get the current object3D from the #drawHere1 inside #m1
           this.origin = document.querySelector("#drawHere1").object3D;
 
-          // add the line to the origin object3D (located at #drawHere which is #m0)
+          // add the line to the origin object3D (located at #drawHere1 which is #m1)
           this.origin.add(this.line);
         },
 
-        // loop to check if the two markers are visible
+        // loop to check if the three markers are visible
         tick: function (time, deltaTime) {
-          // if both markers are visible, get their world positions and store in p0 and p1
+          // if all markers are visible, get their world positions and store in p0 and p1
           if (
             marker_visible["m0"] &&
             marker_visible["m1"] &&
@@ -128,7 +134,7 @@
             this.el1.object3D.getWorldPosition(this.p1);
             this.el2.object3D.getWorldPosition(this.p2);
 
-            // compute the distance from p0 to p2
+            // compute the distance from p1 to p2
             let distance = this.p1.distanceTo(this.p2);
 
             // orient the frame of reference to look at p2 (+z direction point at p2)
@@ -140,25 +146,6 @@
             // make the line visible
             this.line.visible = true;
           }
-          //   if (marker_visible["m0"] && marker_visible["m2"]) {
-          //     console.log("m0m2");
-          //     this.el0.object3D.getWorldPosition(this.p0);
-          //     this.el2.object3D.getWorldPosition(this.p2);
-
-          //     // compute the distance from p0 to p2
-          //     let distance = this.p0.distanceTo(this.p2);
-
-          //     this.origin = document.querySelector("#drawHere0").object3D;
-          //     this.origin.add(this.line);
-          //     // orient the frame of reference to look at p2 (+z direction point at p2)
-          //     this.origin.lookAt(this.p2);
-
-          //     // set the scale of the line
-          //     this.line.scale.set(1, 1, distance);
-
-          //     // make the line visible
-          //     this.line.visible = true;
-          //   }
           else {
             // if any marker is not visible, hide the line
             this.line.visible = false;
@@ -168,7 +155,7 @@
 
       AFRAME.registerComponent("draw-line2-0", {
         init: function () {
-          // getting the DOM elements "#m0", "#m1" and "#m2"
+          // getting the DOM elements "#m0" and "#m2"
           this.el0 = document.querySelector("#m0");
           this.el2 = document.querySelector("#m2");
 
@@ -190,16 +177,16 @@
           // assemble a line by combining the buffer and material
           this.line = new THREE.Mesh(geometry, material);
 
-          // get the current object3D from the #drawHere inside #m0
+          // get the current object3D from the #drawHere2 inside #m2
           this.origin = document.querySelector("#drawHere2").object3D;
 
-          // add the line to the origin object3D (located at #drawHere which is #m0)
+          // add the line to the origin object3D (located at #drawHere2 which is #m2)
           this.origin.add(this.line);
         },
 
-        // loop to check if the two markers are visible
+        // loop to check if the three markers are visible
         tick: function (time, deltaTime) {
-          // if both markers are visible, get their world positions and store in p0 and p1
+          // if all markers are visible, get their world positions and store in p0 and p2
           if (
             marker_visible["m0"] &&
             marker_visible["m1"] &&
@@ -208,10 +195,10 @@
             this.el0.object3D.getWorldPosition(this.p0);
             this.el2.object3D.getWorldPosition(this.p2);
 
-            // compute the distance from p0 to p2
+            // compute the distance from p2 to p0
             let distance = this.p2.distanceTo(this.p0);
 
-            // orient the frame of reference to look at p2 (+z direction point at p2)
+            // orient the frame of reference to look at p0 (+z direction point at p0)
             this.origin.lookAt(this.p0);
 
             // set the scale of the line
@@ -225,6 +212,227 @@
           }
         },
       });
+
+      AFRAME.registerComponent("draw-f", {
+        // get parameter "color" from the element in html
+        schema: {
+          color: { type: "color", default: "#AAA" },
+        },
+        init: function () {
+          let geometry = new THREE.BufferGeometry();
+
+          // vertex buffer
+          let vertices = new Float32Array([
+            // left column front
+            0, -150, 0, 0, 0, 0, 30, -150, 0, 0, 0, 0, 30, 0, 0, 30, -150, 0,
+
+            // top rung front
+            30, -150, 0, 30, -120, 0, 100, -150, 0, 30, -120, 0, 100, -120, 0,
+            100, -150, 0,
+
+            // middle rung front
+            30, -90, 0, 30, -60, 0, 67, -90, 0, 30, -60, 0, 67, -60, 0, 67, -90,
+            0,
+
+            // left column back
+            0, -150, 30, 30, -150, 30, 0, 0, 30, 0, 0, 30, 30, -150, 30, 30, 0,
+            30,
+
+            // top rung back
+            30, -150, 30, 100, -150, 30, 30, -120, 30, 30, -120, 30, 100, -150,
+            30, 100, -120, 30,
+
+            // middle rung back
+            30, -90, 30, 67, -90, 30, 30, -60, 30, 30, -60, 30, 67, -90, 30, 67,
+            -60, 30,
+
+            // top
+            0, -150, 0, 100, -150, 0, 100, -150, 30, 0, -150, 0, 100, -150, 30,
+            0, -150, 30,
+
+            // top rung right
+            100, -150, 0, 100, -120, 0, 100, -120, 30, 100, -150, 0, 100, -120,
+            30, 100, -150, 30,
+
+            // under top rung
+            30, -120, 0, 30, -120, 30, 100, -120, 30, 30, -120, 0, 100, -120,
+            30, 100, -120, 0,
+
+            // between top rung and middle
+            30, -120, 0, 30, -90, 30, 30, -120, 30, 30, -120, 0, 30, -90, 0, 30,
+            -90, 30,
+
+            // top of middle rung
+            30, -90, 0, 67, -90, 30, 30, -90, 30, 30, -90, 0, 67, -90, 0, 67,
+            -90, 30,
+
+            // right of middle rung
+            67, -90, 0, 67, -60, 30, 67, -90, 30, 67, -90, 0, 67, -60, 0, 67,
+            -60, 30,
+
+            // bottom of middle rung.
+            30, -60, 0, 30, -60, 30, 67, -60, 30, 30, -60, 0, 67, -60, 30, 67,
+            -60, 0,
+
+            // right of bottom
+            30, -60, 0, 30, 0, 30, 30, -60, 30, 30, -60, 0, 30, 0, 0, 30, 0, 30,
+
+            // bottom
+            0, 0, 0, 0, 0, 30, 30, 0, 30, 0, 0, 0, 30, 0, 30, 30, 0, 0,
+
+            // left side
+            0, -150, 0, 0, -150, 30, 0, 0, 30, 0, -150, 0, 0, 0, 30, 0, 0, 0,
+          ]);
+
+          // itemSize = 3 because a vertex consists of three values (x, y, z)
+          geometry.setAttribute(
+            "position",
+            new THREE.BufferAttribute(vertices, 3)
+          );
+          geometry.applyMatrix(
+            new THREE.Matrix4().makeRotationX(THREE.Math.degToRad(180))
+          );
+          geometry.applyMatrix(new THREE.Matrix4().makeTranslation(0, 0, 0));
+          
+          // resize model
+          geometry.scale(0.5, 0.5, 0.5);
+
+          // set color of the material
+          let material = new THREE.MeshLambertMaterial({
+            color: this.data.color,
+          });
+
+          // assemble the F model by combinning material and buffer
+          let mesh = new THREE.Mesh(geometry, material);
+          this.el.object3D.add(mesh);
+        },
+        tick: function(time, deltaTime) {
+          // if all markers is detected, hide all the F models
+          if (
+            marker_visible["m0"] &&
+            marker_visible["m1"] &&
+            marker_visible["m2"]
+          ) {
+            this.el.object3D.visible = false;
+          } else {
+            this.el.object3D.visible = true;
+          }
+        }
+      });
+
+      AFRAME.registerComponent("christmas-tree", {
+        init: function () {
+          // getting the DOM elements "#m0", "#m1" and "#m2"
+          this.el0 = document.querySelector("#m0");
+          this.el1 = document.querySelector("#m1");
+          this.el2 = document.querySelector("#m2");
+
+          // to store the position of the the markers
+          this.p0 = new THREE.Vector3();
+          this.p1 = new THREE.Vector3();
+          this.p2 = new THREE.Vector3();
+
+          // Wait for model to load.
+          this.el.addEventListener("model-loaded", () => {
+            christmas_model_loaded = true;
+          });
+        },
+
+        tick: function (time, deltaTime) {
+          // if all three markers are detected, show the model
+          if (
+            marker_visible["m0"] &&
+            marker_visible["m1"] &&
+            marker_visible["m2"]
+          ) {
+            // if model loaded, store each position in p0, p1 and p2
+            if (christmas_model_loaded) {
+              this.el0.object3D.getWorldPosition(this.p0);
+              this.el1.object3D.getWorldPosition(this.p1);
+              this.el2.object3D.getWorldPosition(this.p2);
+
+              // finding the center of 3 markers
+              let centerX = (this.p0.x + this.p1.x + this.p2.x) / 3;
+              let centerY = (this.p0.y + this.p1.y + this.p2.y) / 3;
+              let centerZ = (this.p0.z + this.p1.z + this.p2.z) / 3;
+
+              // set model to the middle of 3 markers
+              this.el
+                .getObject3D("mesh")
+                .position.set(centerX, centerY, centerZ);
+
+              // resize model
+              this.el.getObject3D("mesh").scale.set(0.3, 0.3, 0.3);
+
+              // get rotation from 1 of the marker and set model rotation
+              let worldRotation = new THREE.Quaternion();
+              this.el0.object3D.getWorldQuaternion(worldRotation);
+
+              let rotation = new THREE.Euler();
+              rotation.setFromQuaternion(worldRotation);
+
+              this.el
+                .getObject3D("mesh")
+                .rotation.set(rotation.x, rotation.y, rotation.z);
+
+              // make the model visible
+              this.el.getObject3D("mesh").visible = true;
+            }
+          } else {
+            if (christmas_model_loaded) {
+              // if any marker is not visible, hide the model
+              this.el.getObject3D("mesh").visible = false;
+            }
+          }
+        },
+      });
+
+      AFRAME.registerComponent("smol-holomyth", {
+        init: function () {
+          // Wait for model to load.
+          this.el.addEventListener("model-loaded", () => {
+            holomyth_model_loaded = true;
+          });
+
+          // get christmastree for position and rotation references
+          this.el0 = document.querySelector("#christmastree");
+        },
+        tick: function (time, deltaTime) {
+          // if all three markers are detected, show the model
+          if (
+            marker_visible["m0"] &&
+            marker_visible["m1"] &&
+            marker_visible["m2"]
+          ) {
+            // if model loaded, store position and rotation from #christmastree
+            if (holomyth_model_loaded) {
+              let position = this.el0.getObject3D("mesh").position
+              let rotation = this.el0.getObject3D("mesh").rotation
+
+              // set model position according to #christmastree
+              this.el
+                .getObject3D("mesh")
+                .position.set(position.x , position.y + 0.3 , position.z );
+
+              // resize model
+              this.el.getObject3D("mesh").scale.set(0.1, 0.1, 0.1);
+
+              // set model rotation acording to #christmastree
+              this.el
+                .getObject3D("mesh")
+                .rotation.set(rotation.x, rotation.y, rotation.z);
+
+              // make the model visible
+              this.el.getObject3D("mesh").visible = true;
+            }
+          } else {
+            if (holomyth_model_loaded) {
+              // if any marker is not visible, hide the model
+              this.el.getObject3D("mesh").visible = false;
+            }
+          }
+        }
+      });
     </script>
   </head>
   <body style="margin: 0px; overflow: hidden">
@@ -236,30 +444,21 @@
       arjs="sourceType: webcam; detectionMode: mono_and_matrix; matrixCodeType: 3x3;"
       vr-mode-ui="enabled: false;"
     >
+      <a-assets>
+        <a-asset-item
+          id="christmas-tree"
+          src="./asset/christmas-tree/scene.gltf"
+        ></a-asset-item>
+        <a-asset-item
+          id="smol-holomyth"
+          src="./asset/smol-holomyth/scene.gltf"
+        ></a-asset-item>
+      </a-assets>
+
       <!-- marker #m0 or p0 -->
       <a-marker type="barcode" value="3" id="m0" marker-events>
         <!-- draw a red box -->
-        <a-box
-          position="0 0 0"
-          color="red"
-          width="0.1"
-          depth="0.5"
-          height="0.1"
-        ></a-box>
-        <a-box
-          position="-0.1 0 0.2"
-          color="red"
-          width="0.3"
-          depth="0.1"
-          height="0.1"
-        ></a-box>
-        <a-box
-          position="-0.1 0 0"
-          color="red"
-          width="0.2"
-          depth="0.1"
-          height="0.1"
-        ></a-box>
+        <a-gltf-model draw-f="color: red" scale="0.01 0.01 0.01"></a-gltf-model>
 
         <!-- draw area originated at #m0/p0 -->
         <a-entity id="drawHere0"></a-entity>
@@ -268,54 +467,20 @@
       <!-- marker #m1 or p1 -->
       <a-marker type="barcode" value="5" id="m1" marker-events>
         <!-- draw a red box -->
-        <a-box
-          position="0 0 0"
-          color="green"
-          width="0.1"
-          depth="0.5"
-          height="0.1"
-        ></a-box>
-        <a-box
-          position="-0.1 0 0.2"
-          color="green"
-          width="0.3"
-          depth="0.1"
-          height="0.1"
-        ></a-box>
-        <a-box
-          position="-0.1 0 0"
-          color="green"
-          width="0.2"
-          depth="0.1"
-          height="0.1"
-        ></a-box>
+        <a-gltf-model
+          draw-f="color: green"
+          scale="0.01 0.01 0.01"
+        ></a-gltf-model>
 
         <a-entity id="drawHere1"></a-entity>
       </a-marker>
 
       <a-marker type="barcode" value="7" id="m2" marker-events>
         <!-- draw a blue box -->
-        <a-box
-          position="0 0 0"
-          color="blue"
-          width="0.1"
-          depth="0.5"
-          height="0.1"
-        ></a-box>
-        <a-box
-          position="-0.1 0 0.2"
-          color="blue"
-          width="0.3"
-          depth="0.1"
-          height="0.1"
-        ></a-box>
-        <a-box
-          position="-0.1 0 0"
-          color="blue"
-          width="0.2"
-          depth="0.1"
-          height="0.1"
-        ></a-box>
+        <a-gltf-model
+          draw-f="color: blue"
+          scale="0.01 0.01 0.01"
+        ></a-gltf-model>
 
         <a-entity id="drawHere2"></a-entity>
       </a-marker>
@@ -328,6 +493,8 @@
       <a-entity draw-line0-1></a-entity>
       <a-entity draw-line1-2></a-entity>
       <a-entity draw-line2-0></a-entity>
+      <a-entity gltf-model="#christmas-tree" id="christmastree" christmas-tree></a-entity>
+      <a-entity gltf-model="#smol-holomyth" smol-holomyth></a-entity>
     </a-scene>
   </body>
 </html>
